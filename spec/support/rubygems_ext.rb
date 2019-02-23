@@ -2,6 +2,7 @@
 
 require "rubygems/user_interaction"
 require "support/path" unless defined?(Spec::Path)
+require "fileutils"
 
 module Spec
   module Rubygems
