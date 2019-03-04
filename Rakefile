@@ -11,10 +11,6 @@ else
   File.expand_path("tmp/rubygems")
 end
 
-def bundler_spec
-  @bundler_spec ||= Gem::Specification.load("bundler.gemspec")
-end
-
 def safe_task(&block)
   yield
   true
@@ -39,7 +35,7 @@ end
 namespace :spec do
   desc "Ensure spec dependencies are installed"
   task :deps do
-    deps = Hash[bundler_spec.development_dependencies.map do |d|
+    deps = Hash[Gem::Specification.load("bundler.gemspec").development_dependencies.map do |d|
       [d.name, d.requirement.to_s]
     end]
 
