@@ -1,9 +1,21 @@
 # frozen_string_literal: true
 
-begin
-  require "ronn"
+namespace :man do
+  begin
+    bundler_spec = Gem::Specification.load(File.expand_path("../../bundler.gemspec", __FILE__))
+    ronn_dep = bundler_spec.dependencies.find do |dep|
+      dep.name == "ronn"
+    end
 
-  namespace :man do
+    ronn_requirement = ronn_dep.requirement.to_s
+
+    gem "ronn", ronn_requirement
+
+    require "ronn"
+  rescue LoadError
+    task(:require) { abort "We couln't activate ronn (#{ronn_requirement}). Try `gem install ronn:'#{ronn_requirement}'` to be able to release!" }
+    task(:build) { warn "We couln't activate ronn (#{ronn_requirement}). Try `gem install ronn:'#{ronn_requirement}'` to be able to build the help pages" }
+  else
     directory "man"
 
     index = []
@@ -56,10 +68,5 @@ begin
     end
 
     task(:require) {}
-  end
-rescue LoadError
-  namespace :man do
-    task(:require) { abort "Install the ronn gem to be able to release!" }
-    task(:build) { warn "Install the ronn gem to build the help pages" }
   end
 end
