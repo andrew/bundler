@@ -88,11 +88,12 @@ task :spec do
   sh("bin/rspec")
 end
 
-begin
-  require "rubocop/rake_task"
-  rubocop = RuboCop::RakeTask.new
-  rubocop.options = ["--parallel"]
+desc "Run RuboCop"
+task :rubocop do
+  sh("bin/rubocop --parallel")
+end
 
+begin
   namespace :spec do
     task :clean do
       rm_rf "tmp"
@@ -224,9 +225,7 @@ begin
     end
   end
 rescue LoadError
-  task :rubocop do
-    abort "Run `rake spec:deps` to be able to run rubocop"
-  end
+  nil
 end
 
 begin
