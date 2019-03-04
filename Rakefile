@@ -11,13 +11,6 @@ else
   File.expand_path("tmp/rubygems")
 end
 
-def safe_task(&block)
-  yield
-  true
-rescue StandardError
-  false
-end
-
 # Benchmark task execution
 module Rake
   class Task
@@ -38,6 +31,13 @@ task :spec do
 end
 
 namespace :spec do
+  def safe_task(&block)
+    yield
+    true
+  rescue StandardError
+    false
+  end
+
   desc "Ensure spec dependencies are installed"
   task :deps do
     deps = Hash[Gem::Specification.load("bundler.gemspec").development_dependencies.map do |d|
